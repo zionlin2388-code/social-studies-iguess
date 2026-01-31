@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Second Ninth Week Exam Prep</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #2980b9; --bg: #f4f7f6; --success: #27ae60; --error: #e74c3c; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); padding: 20px; color: #333; }
+        .container { max-width: 950px; margin: auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 25px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: var(--primary); border-bottom: 5px solid var(--accent); padding-bottom: 10px; }
+        
+        /* Menu Styles */
+        #menu-screen { text-align: center; padding: 50px 0; }
+        .subject-card { 
+            display: inline-block; width: 220px; padding: 30px; margin: 15px; 
+            background: var(--accent); color: white; border-radius: 12px; 
+            cursor: pointer; transition: 0.3s; font-weight: bold; font-size: 1.2rem;
+        }
+        .subject-card:hover { transform: translateY(-5px); background: #1c5982; }
+        
+        /* Quiz Styles */
+        #quiz-screen { display: none; }
+        h2 { background: var(--primary); color: white; padding: 12px; border-radius: 5px; margin-top: 40px; font-size: 1.2rem; }
+        .q-block { margin-bottom: 20px; padding: 20px; border: 1px solid #eee; border-radius: 10px; background: #fff; transition: 0.3s; }
+        .q-block:hover { border-color: var(--accent); }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        button.opt { padding: 12px; border: 1px solid #ccc; border-radius: 6px; background: white; cursor: pointer; text-align: left; font-size: 0.95rem; }
+        button.opt:hover { background: #f0f7ff; }
+        button.selected { background: #dbeafe; border-color: var(--accent); font-weight: bold; }
+        .correct { background: var(--success) !important; color: white; border-color: var(--success) !important; }
+        .wrong { background: var(--error) !important; color: white; border-color: var(--error) !important; }
+        
+        .btn-main { width: 100%; padding: 20px; background: var(--accent); color: white; border: none; border-radius: 10px; font-size: 1.3rem; cursor: pointer; margin-top: 20px; font-weight: bold; }
+        #final-score { display: none; text-align: center; margin-top: 30px; padding: 30px; background: #eef6fc; border-radius: 15px; }
+        #floating-status { position: fixed; top: 20px; right: 20px; background: var(--primary); color: white; padding: 10px 20px; border-radius: 50px; font-weight: bold; display: none; z-index: 100; }
+    </style>
+</head>
+<body>
+
+<div id="floating-status">Progress: 0/0</div>
+
+<div class="container">
+    <h1>Grade 7 Ultimate Study Hub</h1>
+
+    <div id="menu-screen">
+        <p>Choose a subject to start your practice:</p>
+        <div class="subject-card" onclick="startQuiz('Social Study')">Social Study</div>
+        <div class="subject-card" onclick="startQuiz('Math')">Mathematics</div>
+        <div class="subject-card" onclick="startQuiz('All')" style="background: #27ae60;">Answer All Subjects</div>
+    </div>
+
+    <div id="quiz-screen">
+        <button onclick="location.reload()" style="float: right; padding: 5px 15px; cursor: pointer;">Back to Menu</button>
+        <h2 id="current-subject-title"></h2>
+        
+        <div id="quiz-mount"></div>
+
+        <button class="btn-main" onclick="grade()">Submit and Show Results</button>
+
+        <div id="final-score">
+            <h2 style="background:none; color: var(--primary);">Your Results</h2>
+            <div id="score-text" style="font-size: 3rem; margin: 20px 0;"></div>
+            <p id="feedback-msg" style="font-size: 1.1rem; color: #666;"></p>
+            <button class="btn-main" onclick="location.reload()" style="max-width: 300px;">Try Another Subject</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const allQuestions = [
+        // --- SOCIAL STUDY SUBJECT ---
+
+        
+
+        // SECTION I: GLOSSARY (15 terms)
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "An extended group of people who live together as one community", a: "Society", o: ["Society", "Clan", "Identity", "Civic Engagement"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "A group of closely connected families within a traditional society", a: "Clan", o: ["Ethics", "Society", "Clan", "Mores"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "To force to behave in a particular way or follow a course of action", a: "Constrain", o: ["Constrain", "Saturate", "Smelt", "Deterioration"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "The ideas that are important to us", a: "Values", o: ["Ethics", "Values", "Identity", "Norms"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "Treating complicated issues as much simpler than they really are", a: "Simplistic", o: ["Optimistic", "Simplistic", "Altruism", "Irrigation"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "Behaving selflessly in order to help others", a: "Altruism", o: ["Ethics", "Altruism", "Optimism", "Identity"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "Accepting something slightly different from what we really want", a: "Compromise", o: ["Compromise", "Constrain", "Socialization", "Identity"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "The moral principles of an individual or a community", a: "Ethics", o: ["Values", "Ethics", "Identity", "Deterioration"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "Hopeful and confident about the future", a: "Optimistic", o: ["Simplistic", "Optimistic", "Saturated", "Smelt"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "The process of becoming gradually worse", a: "Deterioration", o: ["Deterioration", "Constrain", "Irrigation", "Saturated"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "A group of small islands or area of sea with many islands", a: "Archipelago", o: ["Archipelago", "Irrigation", "Enkang", "Mesopotamia"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "A system for watering crops", a: "Irrigation", o: ["Irrigation", "Smelt", "Saturated", "Archipelago"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "The individual characteristics of a person or thing", a: "Identity", o: ["Society", "Identity", "Ethics", "Values"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "To extract metal by heating the ore and melting it", a: "Smelt", o: ["Irrigation", "Smelt", "Socialization", "Diffusion"] },
+
+        { subject: "Social Study", s: "I. Glossary Matching", q: "Completely soaked with water", a: "Saturated", o: ["Deterioration", "Saturated", "Archipelago", "Simplistic"] },
+
+
+
+        // SECTION II: KNOWLEDGE & CONCEPTS
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "The organization responsible for international cooperation in science and culture is:", a: "UNESCO", o: ["UNESCO", "WHO", "UNICEF", "WTO"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "Identity develops in response to both internal and ___ factors.", a: "external", o: ["external", "ancient", "hidden", "financial"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "Identifying with a group gives people a sense of:", a: "belonging", o: ["belonging", "fear", "wealth", "exclusion"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "Adolescence usually takes place during:", a: "Teenage years", o: ["Infancy", "Teenage years", "Adulthood", "Old age"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "Active involvement in community and society is called:", a: "Civic engagement", o: ["Civic engagement", "Socialization", "Cultural penetration", "Smelting"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "Morals help people decide whether behavior is:", a: "acceptable or unacceptable", o: ["legal or illegal", "acceptable or unacceptable", "cheap or expensive", "old or new"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "When businesses include social and environmental values, it is called:", a: "Corporate social responsibility", o: ["Socialization", "Corporate social responsibility", "Cultural penetration", "Civic engagement"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "Expectations about how people should behave based on values are:", a: "Norms", o: ["Norms", "Artifacts", "Pictographs", "Mores"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "Culture is passed down through a process called:", a: "socialization", o: ["socialization", "irrigation", "smelting", "deterioration"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "Buildings, monuments, and artifacts are examples of:", a: "material heritage", o: ["non-material heritage", "material heritage", "cultural penetration", "mores"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "A man’s wealth in Maasai culture is measured by:", a: "number of cattle", o: ["gold", "number of cattle", "land", "houses"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "UNESCO was founded on:", a: "16 November 1945", o: ["16 November 1945", "1 January 1990", "15 August 1963", "1992"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "The first city in the world is believed to be:", a: "Eridu", o: ["Babylon", "Eridu", "Ur", "Rome"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "The first wheel was used by:", a: "Potters", o: ["Soldiers", "Scribes", "Potters", "Farmers"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "Mesopotamian writing on clay tablets is called:", a: "cuneiform", o: ["hieroglyphics", "cuneiform", "pictographs", "glyphs"] },
+
+        { subject: "Social Study", s: "II. Knowledge & Concepts", q: "Who created one of the earliest written legal codes?", a: "Hammurabi", o: ["Mesopotamia", "Hammurabi", "Maasai", "Sumerians"] },
+
+
+
+        // SECTION III: TRUE OR FALSE
+
+        { subject: "Social Study", s: "III. True or False", q: "People can choose the family and country they are born into.", a: "False", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Psychologists believe children become self-aware during adolescence.", a: "False", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Self-esteem means valuing and respecting ourselves.", a: "True", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Young children mainly base their identity on personality and attitudes.", a: "False", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Self-esteem always stays the same throughout a person’s life.", a: "False", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Negative thoughts about oneself can come from other people and the media.", a: "True", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Culture is the unique way of life of a particular group of people.", a: "True", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Marriage is an example of a social institution that reinforces a society’s values.", a: "True", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Material heritage includes oral traditions and performing arts.", a: "False", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Cultural diffusion happens when ideas spread through migration or interaction.", a: "True", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Al Sadu is a traditional weaving craft practiced by men in urban areas.", a: "False", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "The Maya civilization was located in Mesopotamia.", a: "False", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Papyrus was made from the reeds of the River Tigris.", a: "False", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "The Nilometer was used to measure rainfall.", a: "False", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Terraced farming helps prevent soil erosion on steep hillsides.", a: "True", o: ["True", "False"] },
+
+        { subject: "Social Study", s: "III. True or False", q: "Early Mesopotamian cities had governments to make laws.", a: "True", o: ["True", "False"] },
+
+
+
+        // SECTION IV: SHORT QUESTIONS & ACHIEVEMENTS
+
+        { subject: "Social Study", s: "IV. Concepts & Achievements", q: "What is the primary purpose of terraced farming?", a: "To prevent soil erosion and conserve water", o: ["To hunt animals", "To prevent soil erosion and conserve water", "To build houses", "To worship gods"] },
+
+        { subject: "Social Study", s: "IV. Concepts & Achievements", q: "Why were scribes important in Mesopotamia?", a: "They preserved knowledge for future generations", o: ["They were the kings", "They farmed the land", "They preserved knowledge for future generations", "They built the pyramids"] },
+
+        { subject: "Social Study", s: "IV. Concepts & Achievements", q: "How did cuneiform writing change people's lives?", a: "Allowed records of trade, laws, and history to preserve knowledge", o: ["Allowed them to travel faster", "Allowed records of trade, laws, and history to preserve knowledge", "Helped them hunt animals", "Prevented soil erosion"] },
+
+        { subject: "Social Study", s: "IV. Concepts & Achievements", q: "What was the main impact of the invention of the wheel?", a: "Improved transportation and trade by moving heavy loads faster", o: ["It was used to measure rainfall", "It helped track the seasons", "Improved transportation and trade by moving heavy loads faster", "It allowed for weaving cloth"] },
+
+        { subject: "Social Study", s: "IV. Concepts & Achievements", q: "Why were irrigation systems critical for early civilizations?", a: "Ensured crops had water in dry seasons, growing food and population", o: ["They were used for war", "They helped record trade", "Ensured crops had water in dry seasons, growing food and population", "They prevented soil erosion"] },
+
+        { subject: "Social Study", s: "IV. Concepts & Achievements", q: "What allowed for the recording of information similar to early paper?", a: "Papyrus", o: ["Cuneiform", "The wheel", "Papyrus", "Bronze"] },
+
+
+
+        // SECTION V: CULTURE & MASLOW
+
+        { subject: "Social Study", s: "V. Culture & Maslow", q: "The Maasai live in semi-permanent villages called:", a: "Enkang", o: ["Eridu", "Enkang", "Adumu", "Sadu"] },
+
+        { subject: "Social Study", s: "V. Culture & Maslow", q: "Level 1: What are the most basic life needs (food, air, sleep)?", a: "Physiological needs", o: ["Physiological needs", "Safety needs", "Esteem needs", "Self-actualisation"] },
+
+        { subject: "Social Study", s: "V. Culture & Maslow", q: "Level 2: Which level includes 'law and order' and 'security'?", a: "Safety needs", o: ["Physiological", "Safety needs", "Love/Belonging", "Esteem"] },
+
+        { subject: "Social Study", s: "V. Culture & Maslow", q: "Level 5: What is the highest level of the hierarchy (fulfillment)?", a: "Self-actualisation", o: ["Safety", "Esteem", "Self-actualisation", "Love"] },
+
+        { subject: "Social Study", s: "V. Culture & Maslow", q: "Where are the 'more basic' needs shown in Maslow's pyramid?", a: "At the bottom", o: ["At the top", "In the middle", "At the bottom", "They are not shown"] },
+
+
+
+        // --- MATHEMATICS SUBJECT ---
+        { subject: "Math", s: "I. Fill in the Blanks", q: "Mrs. Tan typed 320 words in 5 minutes. Her rate (words/min) is:", a: "64", o: ["50", "64", "60", "72"] },
+        { subject: "Math", s: "I. Fill in the Blanks", q: "The rate at which Mabel ran 400 m in 1 min 2.5 s is:", a: "6.4 m/s", o: ["6.0 m/s", "6.4 m/s", "7.2 m/s", "5.8 m/s"] },
+        { subject: "Math", s: "I. Fill in the Blanks", q: "The next number in the pattern 1, 4, 9, 16 is:", a: "25", o: ["20", "25", "36", "49"] },
+        { subject: "Math", s: "I. Fill in the Blanks", q: "The next two numbers in the pattern 0, 2, 6, 12, 20 are:", a: "30 and 42", o: ["28 and 36", "30 and 42", "30 and 40", "26 and 34"] },
+        { subject: "Math", s: "I. Fill in the Blanks", q: "The next term for the Fibonacci pattern 1, 1, 2, 3, 5, 8, 13 is:", a: "21", o: ["18", "20", "21", "25"] },
+        { subject: "Math", s: "I. Fill in the Blanks", q: "Express 45 km/h in m/s:", a: "12.5 m/s", o: ["10.5 m/s", "12.5 m/s", "15 m/s", "25 m/s"] },
+        { subject: "Math", s: "I. Fill in the Blanks", q: "Simplest form of ratio 8 months : 3 years:", a: "2:9", o: ["8:3", "2:9", "4:15", "1:4"] },
+        { subject: "Math", s: "I. Fill in the Blanks", q: "A comparison of two quantities is called a:", a: "Ratio", o: ["Rate", "Ratio", "Percentage", "Interest"] },
+        
+        { subject: "Math", s: "II. Formulas & Patterns", q: "Simple interest formula (I) =", a: "PRT / 100", o: ["PRT / 100", "P + R + T", "Distance / Time", "Selling Price - Loss"] },
+        { subject: "Math", s: "II. Formulas & Patterns", q: "Time taken =", a: "Distance / Speed", o: ["Speed x Distance", "Distance / Speed", "Speed / Distance", "Cost Price - Profit"] },
+        { subject: "Math", s: "II. Formulas & Patterns", q: "Nth term for 1, 5, 9, 13... is:", a: "4n - 3", o: ["4n + 1", "4n - 3", "5n - 4", "n + 4"] },
+        { subject: "Math", s: "II. Formulas & Patterns", q: "Nth term for 7, 14, 21, 28, 35... is:", a: "7n", o: ["n + 7", "7n", "7n + 1", "n^2"] },
+        { subject: "Math", s: "II. Formulas & Patterns", q: "Next pattern of 3, 4, 7, 11, 18...", a: "29", o: ["25", "29", "21", "36"] },
+        { subject: "Math", s: "II. Formulas & Patterns", q: "Simplest ratio form of 1.8 : 0.4", a: "9 : 2", o: ["18 : 4", "9 : 2", "4 : 1", "2 : 9"] },
+
+        { subject: "Math", s: "III. Multiple Choice", q: "10% of 90 equals:", a: "9", o: ["9", "10", "18", "90"] },
+        { subject: "Math", s: "III. Multiple Choice", q: "Which of the following is a rate?", a: "60 km/h", o: ["3:5", "60 km/h", "4 apples", "10 students"] },
+        { subject: "Math", s: "III. Multiple Choice", q: "Which completes the pattern: 5, 10, 20, ___, 80", a: "40", o: ["25", "30", "35", "40"] },
+
+        { subject: "Math", s: "IV. Short Problem Solving", q: "Ratio of Amanda (18) to Bervin (3 years younger) in simplest form:", a: "6:5", o: ["18:15", "6:5", "5:6", "3:1"] },
+        { subject: "Math", s: "IV. Short Problem Solving", q: "Profit as percentage: Cost $80, Sold $96.", a: "20%", o: ["16%", "20%", "25%", "15%"] },
+        { subject: "Math", s: "IV. Short Problem Solving", q: "If 15L of petrol covers 135km, how far on 42L?", a: "378 km", o: ["315 km", "378 km", "400 km", "270 km"] }
+    ];
+
+    let activeQuestions = [];
+    let userAnswers = {};
+
+    function startQuiz(subject) {
+        document.getElementById('menu-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        document.getElementById('floating-status').style.display = 'block';
+        document.getElementById('current-subject-title').innerText = subject + " Exam Prep";
+        userAnswers = {};
+        
+        if(subject === 'All') {
+            activeQuestions = allQuestions;
+        } else {
+            activeQuestions = allQuestions.filter(q => q.subject === subject);
+        }
+        
+        updateStatus();
+        renderQuiz();
+    }
+
+    function renderQuiz() {
+        const mount = document.getElementById('quiz-mount');
+        mount.innerHTML = "";
+        let currentSection = "";
+        
+        activeQuestions.forEach((item, i) => {
+            if(item.s !== currentSection) {
+                currentSection = item.s;
+                mount.innerHTML += `<h2>${currentSection}</h2>`;
+            }
+            mount.innerHTML += `
+                <div class="q-block">
+                    <div><strong>${i+1}.</strong> ${item.q}</div>
+                    <div class="options" id="q${i}">
+                        ${item.o.map(opt => `<button class="opt" onclick="select(${i}, '${opt}', this)">${opt}</button>`).join('')}
+                    </div>
+                </div>`;
+        });
+    }
+
+    function select(idx, val, btn) {
+        userAnswers[idx] = val;
+        const parent = document.getElementById(`q${idx}`);
+        parent.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        updateStatus();
+    }
+
+    function updateStatus() {
+        const total = activeQuestions.length;
+        const answered = Object.keys(userAnswers).length;
+        document.getElementById('floating-status').innerText = `Progress: ${answered}/${total}`;
+    }
+
+    function grade() {
+        let score = 0;
+        activeQuestions.forEach((item, i) => {
+            const parent = document.getElementById(`q${i}`);
+            parent.querySelectorAll('.opt').forEach(btn => {
+                btn.disabled = true;
+                if(btn.innerText === item.a) btn.classList.add('correct');
+                else if(userAnswers[i] === btn.innerText) btn.classList.add('wrong');
+            });
+            if(userAnswers[i] === item.a) score++;
+        });
+
+        const finalBox = document.getElementById('final-score');
+        finalBox.style.display = "block";
+        document.getElementById('score-text').innerText = `${score} / ${activeQuestions.length}`;
+        
+        let percent = (score / activeQuestions.length) * 100;
+        let msg = percent >= 80 ? "Outstanding! You are ready for the exam." : "Keep practicing! Review the sections you missed.";
+        document.getElementById('feedback-msg').innerText = msg;
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
